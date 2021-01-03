@@ -186,4 +186,17 @@ describe("test serializer", () => {
     const buffer = reader.getBuffer();
     assert(buffer.length === 0);
   });
+
+  test("Should read buffer date", async () => {
+    const reader = new BufferStreamReader(Buffer.alloc(0));
+
+    const buffer = Buffer.alloc(8);
+    const now = parseInt((new Date().getTime() / 1000).toFixed(0), 10);
+    buffer.writeUInt32LE(now, 0);
+    buffer.writeUInt32LE(0, 4);
+    const time = reader.readBufferDate(buffer, 0).getTime() / 1000;
+    assert(now === time);
+    const time1 = reader.readBufferDate(buffer).getTime() / 1000;
+    assert(now === time1);
+  });
 });
